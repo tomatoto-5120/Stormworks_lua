@@ -16,12 +16,17 @@ function onTick()
     local rps = input.getNumber(2)
     local torque =input.getNumber(3)
     local startkey = input.getBool(1)
+    local elec = input.getNumber(4)
 
 
     local target_rps = clamp(cluch ^ acceleration_ofset * maxrps, 18, 60)
 
     if Equal(0, cluch) == true then
         target_rps = target_rps - 6
+    end
+
+    if elec < 0.2 then
+        target_rps = 38
     end
 
     power = PID(target_rps, rps, 0.3, 0, 0.08)
