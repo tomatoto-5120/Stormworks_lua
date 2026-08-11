@@ -1,0 +1,12 @@
+/_build/
+!/_build/_buildactions.lua
+
+# PCごとに異なるVS Code設定
+/.vscode/settings.json
+
+# 必要なら除外
+/Prints/
+
+# 一時ファイル
+*.log
+*.tmp
