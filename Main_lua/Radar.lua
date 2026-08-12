@@ -1,4 +1,4 @@
-require("Lib.NumberBool")
+require("Lib.debugs.NumberBool")
 
 pi=math.pi
 pi2=pi*2
