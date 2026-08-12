@@ -1,7 +1,10 @@
 I,E = 0,0
 e = math.exp(1)
+oldnumber = 0
 maxrps = property.getNumber("max rps") + 60
 acceleration_ofset = property.getNumber("acceleration_ofset") + 0.6
+
+require("Lib.Delta")
 
 require("Lib.NumberBool")
 
@@ -25,8 +28,8 @@ function onTick()
         target_rps = target_rps - 6
     end
 
-    if elec < 0.2 then
-        target_rps = 38
+    if elec < 0.2 and Delta(elec) < 0 or Delta(elec) < -0.05 then
+        target_rps = PID(0.08, Delta(elec), 1.3, 0.0001, 0.8)
     end
 
     power = PID(target_rps, rps, 0.3, 0, 0.08)
@@ -38,4 +41,5 @@ function onTick()
     output.setNumber(1,power)
     output.setNumber(2,target_rps)
     output.setBool(1,startkey)
+    output.setNumber(3,Delta(elec))
 end
