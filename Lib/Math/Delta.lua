@@ -1,3 +1,4 @@
+oldnumber = 0
 function Delta(number)
     local out = number - oldnumber
     oldnumber = number
