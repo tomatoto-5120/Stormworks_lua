@@ -16,23 +16,36 @@ require("Lib.Math.Clamp")
 
 require("Lib.Math.Pulse")
 
+gear_num = 1
+shift_lock = false
+
 function gear(rps, maxgear, reverse)
-    gear_num = 1
-    
-    Cumulative_rps = 0
-    if Pulse(gear_num < maxgear and not reverse and Cumulative_rps > 40 * (gear_num - 1) ) then
-        gear_num = gear_num +1
-        gear_up = true
+    local gear_up = false
+    local gear_down = false
+
+    -- 変速後、RPSが30未満まで落ちたら再び変速可能
+    if shift_lock and rps < 30 then
+        shift_lock = false
     end
 
-    if Pulse(Cumulative_rps < 20 * (gear_num - 1) and gear_num > 1 and not reverse) then
-        gear_num = gear_num - 1
-        gear_down = true
+    if not reverse then
+
+        -- シフトアップ
+        if not shift_lock and rps > 40 and gear_num < maxgear then
+            gear_num = gear_num + 1
+            gear_up = true
+            shift_lock = true
+
+        -- シフトダウン
+        elseif rps < 18 and gear_num > 1 then
+            gear_num = gear_num - 1
+            gear_down = true
+        end
     end
 
-    Cumulative_rps = (gear_num - 1) * 40 + rps
+    local cumulative_rps = (gear_num - 1) * 40 + rps
 
-    return gear_num, gear_up, gear_down, Cumulative_rps
+    return gear_num, gear_up, gear_down, cumulative_rps
 end
 
 function onTick()
@@ -60,7 +73,7 @@ function onTick()
         air_power = air_power *0
     end
 
-    gear_num, gear_up, gear_down, Cumulative_rps = gear(rps, maxgear, reverse)
+    gear_num, gear_up, gear_down = gear(rps, maxgear, reverse)
 
     local fuel_power = clamp(clamp(-0.1 * gear_num + 0.6, 0.25, 0.5) * air_power, -100, 100)
 
@@ -70,7 +83,6 @@ function onTick()
     output.setNumber(3, gear_num)
     output.setBool(2, gear_up)
     output.setBool(3, gear_down)
-    output.setNumber(4, Cumulative_rps)
 end
 
 function onDraw()
