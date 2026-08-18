@@ -1,7 +1,9 @@
 require("Lib.Draw.CircleXY")
 
+require("Lib.debugs.NumberBool")
+
 function onTick()
-	rps=input.getNumber(5)
+	rps = input.getNumber(5)
 end
 	
 function onDraw()
@@ -9,6 +11,11 @@ function onDraw()
 	h=screen.getHeight()
 	
 	screen.setColor(255,255,255)
-	screen.drawCircle(w/2-5,h/2-4,8)
-	screen.drawLine(w/2-5,h/2-4,CircleXY(8,rps,-90,50,0,35,w/2-5,h/2-4))
+	screen.drawCircle(9, 9, 8)
+
+	screen.setColor(0,0,0)
+	screen.drawRectF(1, 10, 32,9)
+
+	screen.setColor(0, 255, 0)
+	screen.drawText(0, 10, string.format("%.1f", rps))
 end
